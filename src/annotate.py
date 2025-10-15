@@ -3,7 +3,7 @@
 # New capabilities:
 # - Build a curated list of "System Rules" by picking lines from the system instruction (or typing your own)
 # - Choose which dialog to view (clean conversation vs. with distractors)
-# - Select/copy a bot (assistant) response from that dialog
+# - Select a bot (assistant) response from that dialog (no edit field)
 # - Add a hand-written distractor and tag which rules it breaks (by index)
 # - Accumulate multiple annotations and export a JSON file with:
 #     { system_rules: [...], annotations: [{bot_response, distractor, rule_indices}], plus split/domain/scenario/context }
@@ -339,41 +339,37 @@ else:
         s = " ".join(str(msg).split())
         return (s[: maxlen - 1] + "…") if len(s) > maxlen else s
 
-    selected_bot_msg = st.selectbox(
+    # Give the selectbox a key so we can read its value inside the callback
+    st.selectbox(
         "Bot response to annotate",
         options=assistant_msgs,
         format_func=labelify,
-        help="Select which bot response this distractor is linked to"
+        help="Select which bot response this distractor is linked to",
+        key="__selected_bot_msg",
     )
 
-    # Optional: let the user edit/copy the bot response text
     st.text_area(
-        "(Optional) Edit/Copy Bot Response",
-        key="_bot_response",
-        value=selected_bot_msg,
+        "Write a Distractor",
+        key="_distractor",
         height=120,
-        placeholder="You can tweak or paste the assistant message here…",
+        placeholder="Type your distractor here…"
     )
-
-    st.text_area("Write a Distractor", key="_distractor", height=120, placeholder="Type your distractor here…")
 
     # Rule tagging
     rule_labels = [f"{i}: {r}" for i, r in enumerate(st.session_state.get("system_rules", []))]
-
-    # Initialize selected rules in session state for proper clearing
     if "_selected_rule_labels" not in st.session_state:
         st.session_state._selected_rule_labels = []
 
-    chosen_rule_labels = st.multiselect(
+    st.multiselect(
         "Which rules does this distractor break? (choose by label)",
         options=rule_labels,
         default=st.session_state._selected_rule_labels,
         key="_rule_multiselect"
     )
 
-    # --- Callback for adding an annotation safely (no direct writes after instantiation) ---
+    # --- Callback for adding an annotation safely (reads selected message from session_state) ---
     def add_annotation_cb():
-        bot_resp = (st.session_state.get("_bot_response") or "").strip()
+        selected_msg = (st.session_state.get("__selected_bot_msg") or "").strip()
         distractor = (st.session_state.get("_distractor") or "").strip()
         labels = st.session_state.get("_rule_multiselect", [])
 
@@ -385,13 +381,16 @@ else:
             except Exception:
                 pass
 
+        if not selected_msg:
+            st.session_state["_add_msg"] = ("error", "Please select a bot response.")
+            return
         if not distractor:
             st.session_state["_add_msg"] = ("error", "Distractor is required.")
             return
 
         st.session_state.setdefault("annotations", []).append(
             {
-                "bot_response": bot_resp,          # keep/edit the selected assistant message
+                "bot_response": selected_msg,     # stored directly from the selected assistant message
                 "distractor": distractor,
                 "rule_indices": sorted(set(indices)),
             }
@@ -400,6 +399,7 @@ else:
         # ✅ Clear widget values INSIDE the callback
         st.session_state["_distractor"] = ""
         st.session_state["_rule_multiselect"] = []
+        st.session_state["_selected_rule_labels"] = []
 
         st.session_state["_add_msg"] = ("success", "Annotation added.")
 

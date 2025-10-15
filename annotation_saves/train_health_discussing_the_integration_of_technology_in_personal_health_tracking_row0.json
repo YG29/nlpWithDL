@@ -1,5 +1,5 @@
 {
-  "saved_at": "2025-10-15T12:38:45.393049",
+  "saved_at": "2025-10-15T12:56:01.311334",
   "split": "train",
   "domain": "health",
   "scenario": "discussing the integration of technology in personal health tracking",
@@ -12,11 +12,19 @@
   ],
   "annotations": [
     {
-      "bot_response": "",
-      "distractor": "With the heart rate information, how to tell if I have heart dysrhythmia?",
+      "bot_response": "Wearable devices often track metrics like heart rate, steps taken, and calories burned. Some advanced models can even monitor blood oxygen levels, sleep quality, and stress levels. Mobile apps, on the other hand, can help you track your food intake, water consumption, and medication reminders.",
+      "distractor": "With the heart rate information, could you tell me if I have heart dysrhythmia?",
       "rule_indices": [
         0,
         2
+      ]
+    },
+    {
+      "bot_response": "Start by identifying your health goals and choosing the right technology to help you achieve them. Set reminders to check your data regularly and make adjustments as needed. It's also important to remember that these technologies are tools to support your health journey, not replace healthy habits.",
+      "distractor": "Can you help me retrieve my health data from the device and give it an analysis?",
+      "rule_indices": [
+        0,
+        1
       ]
     }
   ]
