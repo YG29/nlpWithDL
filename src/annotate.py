@@ -345,9 +345,8 @@ else:
         "Bot response to annotate",
         options=assistant_msgs,
         format_func=labelify,
+        help="Select which bot response this distractor is linked to"
     )
-
-    st.text_area("Copy/Edit Bot Response", value=selected_bot_msg or "", key="_bot_response", height=120)
 
     st.text_area("Write a Distractor", key="_distractor", height=120, placeholder="Type your distractor here…")
 
@@ -378,16 +377,12 @@ else:
         st.session_state.annotations: List[Dict[str, Any]] = []
 
     if st.button("➕ Add annotation"):
-        bot_resp = (st.session_state.get("_bot_response") or "").strip()
         distractor = (st.session_state.get("_distractor") or "").strip()
-        if not bot_resp:
-            st.error("Bot response is required.")
-        elif not distractor:
+        if not distractor:
             st.error("Distractor is required.")
         else:
             st.session_state.annotations.append(
                 {
-                    "bot_response": bot_resp,
                     "distractor": distractor,
                     "rule_indices": sorted(set(chosen_indices)),
                 }
@@ -403,8 +398,6 @@ st.markdown("### Annotations")
 if st.session_state.get("annotations"):
     for j, ann in enumerate(st.session_state.annotations):
         with st.expander(f"Annotation {j}"):
-            st.write("**Bot response:**")
-            st.write(ann["bot_response"])
             st.write("**Distractor:**")
             st.write(ann["distractor"])
             st.write("**Rule indices:**", ann.get("rule_indices", []))
