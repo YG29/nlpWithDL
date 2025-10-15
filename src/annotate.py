@@ -334,18 +334,25 @@ if not assistant_msgs:
 else:
     st.markdown("**Assistant messages** (choose one to annotate)")
 
-
     # For readability, show truncated labels
     def labelify(msg: str, maxlen: int = 140) -> str:
         s = " ".join(str(msg).split())
         return (s[: maxlen - 1] + "…") if len(s) > maxlen else s
-
 
     selected_bot_msg = st.selectbox(
         "Bot response to annotate",
         options=assistant_msgs,
         format_func=labelify,
         help="Select which bot response this distractor is linked to"
+    )
+
+    # Optional: let the user edit/copy the bot response text
+    st.text_area(
+        "(Optional) Edit/Copy Bot Response",
+        key="_bot_response",
+        value=selected_bot_msg,
+        height=120,
+        placeholder="You can tweak or paste the assistant message here…",
     )
 
     st.text_area("Write a Distractor", key="_distractor", height=120, placeholder="Type your distractor here…")
@@ -364,40 +371,55 @@ else:
         key="_rule_multiselect"
     )
 
-    # Convert back to indices
-    chosen_indices: List[int] = []
-    for lab in chosen_rule_labels:
-        try:
-            idx = int(lab.split(":", 1)[0])
-            chosen_indices.append(idx)
-        except Exception:
-            pass
-
-    if "annotations" not in st.session_state:
-        st.session_state.annotations: List[Dict[str, Any]] = []
-
-    if st.button("➕ Add annotation"):
+    # --- Callback for adding an annotation safely (no direct writes after instantiation) ---
+    def add_annotation_cb():
+        bot_resp = (st.session_state.get("_bot_response") or "").strip()
         distractor = (st.session_state.get("_distractor") or "").strip()
+        labels = st.session_state.get("_rule_multiselect", [])
+
+        # Parse rule indices from labels like "0: <rule text>"
+        indices: List[int] = []
+        for lab in labels:
+            try:
+                indices.append(int(lab.split(":", 1)[0]))
+            except Exception:
+                pass
+
         if not distractor:
-            st.error("Distractor is required.")
-        else:
-            st.session_state.annotations.append(
-                {
-                    "distractor": distractor,
-                    "rule_indices": sorted(set(chosen_indices)),
-                }
-            )
-            # Clear inputs for next entry properly
-            st.session_state._distractor = ""
-            st.session_state._selected_rule_labels = []
-            st.success("Annotation added. Don't forget to save your work!")
-            st.rerun()
+            st.session_state["_add_msg"] = ("error", "Distractor is required.")
+            return
+
+        st.session_state.setdefault("annotations", []).append(
+            {
+                "bot_response": bot_resp,          # keep/edit the selected assistant message
+                "distractor": distractor,
+                "rule_indices": sorted(set(indices)),
+            }
+        )
+
+        # ✅ Clear widget values INSIDE the callback
+        st.session_state["_distractor"] = ""
+        st.session_state["_rule_multiselect"] = []
+
+        st.session_state["_add_msg"] = ("success", "Annotation added.")
+
+    # Button wired to the callback
+    st.button("➕ Add annotation", on_click=add_annotation_cb)
+
+    # Show a message from the callback (survives rerun)
+    msg = st.session_state.pop("_add_msg", None)
+    if msg:
+        kind, text = msg
+        getattr(st, kind)(text)   # st.success(...) or st.error(...)
 
 # Show current annotations with ability to remove
 st.markdown("### Annotations")
 if st.session_state.get("annotations"):
     for j, ann in enumerate(st.session_state.annotations):
         with st.expander(f"Annotation {j}"):
+            if ann.get("bot_response"):
+                st.write("**Bot response:**")
+                st.write(ann["bot_response"])
             st.write("**Distractor:**")
             st.write(ann["distractor"])
             st.write("**Rule indices:**", ann.get("rule_indices", []))
