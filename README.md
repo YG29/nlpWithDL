@@ -4,7 +4,14 @@ nlp with deep learning
 ## Distractor Annotation
 
 ### General Workflow
-The basic idea is to generate high quality "off-topic" distractors in a chatbot conversation. 
+The basic idea is to curate a human annotated dataset. In this dataset, high quality "off-topic" distractors are generated and inserted into a chatbot conversation regarding a specific domain and scenario. For each scenario, a system instruction is provided to guide the behavior of the LLM. Human annotators would generate topic rules based on these system instructions. Then, the human annotators go through the conversation and identify places where after the bot response, a distractor would be appropriate. Based on the identified topic rules, the human annotators write a distractor for that bot response and tag which rule the bot should follow for identifying it as a distractor. 
+
+Overall, the human annotated data would have the following rough structure:
+
+{domain/scenario/rules: ......}
+
+{bot reponse: ......} {distractor: ......} {rule index: .....}
+
 
 ### The Annotation App
 
