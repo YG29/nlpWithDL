@@ -1,7 +1,10 @@
 # Topic Following
-# nlp with deep learning
+nlp with deep learning
 
 ## Distractor Annotation
+
+### General Workflow
+The basic idea is to generate high quality "off-topic" distractors in a chatbot conversation. 
 
 ### The Annotation App
 
