@@ -252,7 +252,27 @@ system_instruction = row.get("system_instruction") or ""
 cA, cB = st.columns([2, 3])
 with cA:
     st.markdown("**System Instruction (source)**")
-    st.code(system_instruction or "<empty>", language="markdown")
+    st.markdown(
+        f"""
+        <div style="
+            height: 400px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            font-family: monospace;
+            line-height: 1.4;
+        ">
+        {system_instruction or "<empty>"}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
 
 with cB:
     # Initialize session state
