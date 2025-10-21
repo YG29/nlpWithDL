@@ -1,5 +1,11 @@
 # Topic Following
-nlp with deep learning
+file structure: 
+
+src -- helper programs
+
+notebooks -- jupyter notebooks for exploratory purposes
+
+doc -- concept development logs and documentations
 
 ## Distractor Annotation
 
@@ -28,7 +34,9 @@ Overall, the human annotated data would have the following rough structure:
 
 The app consists of several dropdown menus and fields to fill in. On the left side there are two drop down menus that are responsible for navigating to the correct domain and scenario. 
 
-Once selected desired domain and scenario, the conversation index will be shown in the "select match index" box which also serves as conversation navigator. There are two conversasions per scenario. 
+Once selected desired domain and scenario, the conversation index will be shown in the "select match index" box which also serves as conversation navigator. There are two conversations per scenario. 
 
-The system instruction will be shown. There are two ways of adding a system rule for generating the system rules. 
+The system instruction will be shown. There are two ways of adding a system rule for generating the system rules. One way is to choose the rule from the dropdown menu where each sentence/paragraph is separated. Another way is to copy and paste part of the system instruction into the box and generate custom rules. 
+
+
 
