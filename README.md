@@ -7,6 +7,8 @@ notebooks -- jupyter notebooks for exploratory purposes
 
 doc -- concept development logs and documentations
 
+annotation_saves -- saved json files for annotations of distractors
+
 ## Distractor Annotation
 
 ### General Workflow
