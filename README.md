@@ -1,4 +1,12 @@
 # Topic Following
+
+'
+project/
+|
+|-
+
+'
+
 file structure: 
 
 src -- helper programs
