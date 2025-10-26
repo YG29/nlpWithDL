@@ -5,10 +5,10 @@ and attach distractors resolved with *system_rules from the annotated JSON*.
 Assumes two rows per (split, domain, scenario); row_index selects which one.
 
 Usage:
-  python export_annotations_to_csv.py \
-    --annotations-dir ../annotation_saves \
+  python post_annotate.py \
+    --annotations-dir annotation_saves\
     --dataset-id nvidia/CantTalkAboutThis-Topic-Control-Dataset \
-    --out-dir ./csv_exports
+    --out-dir csv_exports
 
 Requirements:
   pip install datasets pandas
