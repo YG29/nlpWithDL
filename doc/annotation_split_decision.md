@@ -1,0 +1,4 @@
+# Annotation split decision
+After the meeting with all the other groups that are carrying out the topic-following project to decide on annotation guidelines we set up our own meeting. We decided that each team member of group 6 will work on each domain and we will not do one domain each. This was decided so that each domain can have a variety of different annotation styles (still within guidelines). This will ensure that no single person's style or bias dominates a specific domain in the dataset.
+
+We decided that each team member will annotate five scenarios per domain before moving on to the next one, continuing this cycle until all domains are completed or no time is left.
