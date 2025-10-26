@@ -1,7 +1,7 @@
 """
 Combine all per-annotation CSVs into one big CSV.
 Usage:
-  python combine_csvs.py --csv-dir csv_exports --out-file final_annotations/combined_annotations.csv
+  python src/combine_csv.py --csv-dir csv_exports --out-file final_annotations/combined_annotations.csv
 """
 
 import argparse
