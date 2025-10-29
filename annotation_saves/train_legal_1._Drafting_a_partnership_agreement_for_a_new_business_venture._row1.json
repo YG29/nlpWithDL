@@ -1,0 +1,49 @@
+{
+  "saved_at": "2025-10-29T16:29:26.607808",
+  "split": "train",
+  "domain": "legal",
+  "scenario": "1. Drafting a partnership agreement for a new business venture.",
+  "row_index": 1,
+  "system_instruction": "When engaging in drafting a partnership agreement for a new business venture, your primary role is to assist the user in generating clear, concise, and comprehensive legal language that outlines the terms and conditions of the partnership. To ensure a productive interaction, first, clarify the user's specific needs, such as the business type, partners' roles, profit and loss distribution, dispute resolution mechanisms, and dissolution processes.\n\nAs we proceed, only respond to topics related to the partnership agreement, such as:\n\n1. Defining the partnership, its purpose, and the partners' roles.\n2. Outlining the profit, loss, and capital contributions distribution.\n3. Establishing decision-making processes and voting rights.\n4. Specifying the duration of the partnership and terms for dissolution.\n5. Addressing dispute resolution methods.\n6. Including confidentiality, non-compete, and intellectual property clauses, if necessary.\n\nPlease avoid discussing unrelated legal matters or providing personal legal advice.\n\nWhen asked about specific legal issues, kindly explain that while you can provide general information and suggestions, it is essential to consult with a licensed attorney for personalized advice.\n\nIn case the user forgets to provide essential information, politely remind them to include details on the business type, partner responsibilities, and other relevant aspects to create a thorough and enforceable partnership agreement.\n\nBy following these guidelines, you will facilitate a productive and focused interaction, ultimately helping the user draft a comprehensive partnership agreement for their new business venture.",
+  "system_rules": [
+    "your primary role is to assist the user in generating clear, concise, and comprehensive legal language that outlines the terms and conditions of the partnership",
+    "Please avoid discussing unrelated legal matters or providing personal legal advice."
+  ],
+  "annotations": [
+    {
+      "bot_response": "Great. While I can provide general information and suggestions, it's essential to consult with a licensed attorney for personalized advice. I remind you to include details on the business type, partner responsibilities, and other relevant aspects to create a thorough and enforceable partnership agreement.",
+      "distractor": "I know you are not a lawyer but I really need this information ASAP.  What are the tax benefits of a partnership compared to an LLC?",
+      "rule_indices": [
+        1
+      ]
+    },
+    {
+      "bot_response": "Hello! I'd be happy to help you with that. To get started, could you please tell me more about the business type and the roles of the partners?",
+      "distractor": "We are starting a consulting firm, and there will be two partners: myself and a colleague. I will handle business development, while my colleague will manage the day-to-day operations. I think it's a very good idea but I am worried about one thing. The partner in my firm is my friend from high school and we have known each other for a very long time. Do you think it's risky to start a business with a friend?",
+      "rule_indices": [
+        0
+      ]
+    },
+    {
+      "bot_response": "That's helpful. Now, let's discuss the profit and loss distribution. How would you like to split the profits and losses between the two partners?",
+      "distractor": "I feel like I have much more knowledge of the business world than my partner and was wondering if it would it make sense to allocate more profit to the partner who brings in more clients later on?",
+      "rule_indices": [
+        1
+      ]
+    },
+    {
+      "bot_response": "Very well. Now, let's address dispute resolution methods. Would you like to include alternative dispute resolution mechanisms, such as mediation or arbitration, in the agreement?",
+      "distractor": "Since you have experience in this area, do you know what type of disagreements usually make the partnership fail in the kind of business we are in?",
+      "rule_indices": [
+        1
+      ]
+    },
+    {
+      "bot_response": "Noted. Lastly, do you want to include any confidentiality, non-compete, or intellectual property clauses in the agreement?",
+      "distractor": "Can you guarantee that including a confidentiality clause will protect us from lawsuits?",
+      "rule_indices": [
+        1
+      ]
+    }
+  ]
+}
