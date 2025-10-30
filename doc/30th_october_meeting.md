@@ -1,0 +1,4 @@
+# 30th October meeting 
+- As stated last meeting, the legal and banking domains include more technical language and all team members noticed how the annotation time for those domains increases compared to the health domain.
+- Progress is good overall and team members are getting more comfortable with the harder domains as well. 
+- After nearly a week of serious annotating we also decided to share a few annotation examples with eachother in the different domains in orer to compare our methods and techniques. We agreed on every span selected for the chosen distractors and also found the distractors human-like and of good quality. Every member tried to incorporate a variety off-topic and adversarial distractors.
