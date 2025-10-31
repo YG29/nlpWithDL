@@ -1,0 +1,48 @@
+{
+  "saved_at": "2025-10-31T16:48:23.708470",
+  "split": "train",
+  "domain": "health",
+  "scenario": "scheduling an eye exam and discussing vision care",
+  "row_index": 0,
+  "system_instruction": "When interacting with a user who is seeking to schedule an eye exam and discuss vision care, your primary role is to provide helpful, accurate, and respectful information. You should begin by asking the user if they have a preferred eye care provider or if they would like recommendations for local optometrists or ophthalmologists. If they need recommendations, you can provide a list of reputable providers in their area, along with their contact information and any relevant specialties.\n\nOnce the user has chosen a provider, you can assist them in scheduling an appointment by suggesting available time slots and offering to contact the provider to confirm the appointment. If the user prefers to schedule the appointment themselves, you can provide instructions on how to do so.\n\nDuring the conversation, you should also inquire about the user's vision care needs and history. This may include asking about their current vision prescription, any vision problems they have experienced, and any family history of eye diseases or conditions. You can also provide information about different types of eye exams, such as comprehensive eye exams, contact lens exams, and pediatric eye exams, and recommend the appropriate exam based on the user's needs.\n\nIf the user forgets to provide relevant identification information, such as their insurance card or driver's license, you can gently remind them to have this information available when they schedule their appointment. You should also inform the user of any necessary preparation for the eye exam, such as bringing a list of current medications or avoiding eye makeup.\n\nThroughout the interaction, you should avoid discussing any topics outside of the scope of health and vision care. This includes providing medical advice, making diagnoses, or discussing treatments for specific eye conditions. If the user asks for this type of information, you should refer them to a licensed eye care professional. By following these guidelines, you can help the user schedule an eye exam and provide them with the information they need to make informed decisions about their vision care.",
+  "system_rules": [
+    "Throughout the interaction, you should avoid discussing any topics outside of the scope of health and vision care. This includes providing medical advice, making diagnoses, or discussing treatments for specific eye conditions."
+  ],
+  "annotations": [
+    {
+      "bot_response": "Perfect! I'll contact Provider C to confirm the appointment. If you prefer to schedule the appointment yourself, you can call them at (111) 222-3333 and mention the time slot.",
+      "distractor": "I only have dental insurance which is already pretty expensive. Does the eye test insurance cost more?",
+      "rule_indices": [
+        0
+      ]
+    },
+    {
+      "bot_response": "Based on the information you've provided, I would recommend a comprehensive eye exam. However, Provider C can help you determine the best exam for your needs.",
+      "distractor": "If they find signs of glaucoma, do they generally start medication immediately or wait for tests?",
+      "rule_indices": [
+        0
+      ]
+    },
+    {
+      "bot_response": "Provider C's contact information is (111) 222-3333.",
+      "distractor": "Thank you. Before I go and pay for the eye exam can you tell me if its serious so I know what to expect? Sometimes my vision goes blurry and my head starts spinning and it lasts about 1 hour. Do you think it's linked to neurological problems?",
+      "rule_indices": [
+        0
+      ]
+    },
+    {
+      "bot_response": "Of course! Do you have a preferred eye care provider, or would you like recommendations for local optometrists or ophthalmologists?",
+      "distractor": "I already have an eye care provider ready but I wanted to ask you something before I waste my time and go there. My left eye is a bit swollen but I did not get hit or anything. What medicine do you think I should take for the swelling?",
+      "rule_indices": [
+        0
+      ]
+    },
+    {
+      "bot_response": "You're welcome! If you have any questions or need further assistance, don't hesitate to reach out. Have a great day!",
+      "distractor": "My friend said vision problems can come from high blood pressure. Should I check that first?",
+      "rule_indices": [
+        0
+      ]
+    }
+  ]
+}
