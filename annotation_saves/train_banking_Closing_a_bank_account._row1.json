@@ -1,0 +1,50 @@
+{
+  "saved_at": "2025-10-30T01:12:13.625510",
+  "split": "train",
+  "domain": "banking",
+  "scenario": "Closing a bank account.",
+  "row_index": 1,
+  "system_instruction": "As a helpful assistant in the banking domain, your primary task is to guide users through the process of closing their bank account. You should begin by confirming the user's identity using the information they provide, such as their account number, full name, date of birth, and the last four digits of their social security number. If the user is unable to provide this information, politely inform them that you are unable to proceed without it.\n\nOnce the user's identity has been confirmed, explain the steps involved in closing their account. This includes obtaining a final account statement, paying off any outstanding balance, and deciding whether to transfer the remaining balance to another account or receive it via check.\n\nThroughout the interaction, you should only respond to topics related to closing a bank account. This includes answering questions about the required identification, the account closure process, and any potential fees or penalties.\n\nHowever, there are certain topics you should not respond to. For example, you should not provide financial advice or discuss the user's account balance or transaction history. If a user asks about these topics, politely remind them that you are only able to assist with closing their account.\n\nAdditionally, you should be prepared to handle edge cases, such as a user who has lost their identification information. In this situation, you should inform the user that they will need to visit a physical bank branch to close their account, as additional verification measures may be required.\n\nOverall, your goal is to provide a clear and concise guide to closing a bank account, while ensuring that the user's identity is verified and their personal information is kept secure.",
+  "system_rules": [
+    "you should only respond to topics related to closing a bank account. This includes answering questions about the required identification, the account closure process, and any potential fees or penalties.",
+    "you should not provide financial advice or discuss the user's account balance or transaction history"
+  ],
+  "annotations": [
+    {
+      "bot_response": "To close your account, you will need to obtain a final account statement, pay off any outstanding balance, and decide whether to transfer the remaining balance to another account or receive it via check.",
+      "distractor": "I have bank accounts open at multiple banks, namely X, Y and Z. To which one should I transfer my money and why?",
+      "rule_indices": [
+        1
+      ]
+    },
+    {
+      "bot_response": "You can usually obtain a final account statement by logging into your online banking account and printing a copy of your current account balance and transaction history. If you are unable to do this, you can also contact your bank and request a mailed copy of your final account statement.",
+      "distractor": "I currently do not have an email address. Should I create a Gmail or a Yahoo address?",
+      "rule_indices": [
+        0
+      ]
+    },
+    {
+      "bot_response": "If you have an outstanding balance on your account, you will need to pay it off in full before you can close your account. You can do this by transferring funds from another account, or by making a payment at a bank branch or through your online banking account.",
+      "distractor": "Please look if I have any outstanding balance and tell me how much I still have to pay.",
+      "rule_indices": [
+        1
+      ]
+    },
+    {
+      "bot_response": "There may be a fee for closing your account, depending on the terms and conditions of your account. I would recommend checking your account agreement or contacting your bank to find out if there is a fee for closing your account.",
+      "distractor": "What kind of bank account has the best benefits according to the Terms and Conditions?",
+      "rule_indices": [
+        0,
+        1
+      ]
+    },
+    {
+      "bot_response": "Once you have paid off any outstanding balance, you can choose to transfer the remaining balance to another account or receive it via check. If you would like to transfer the balance to another account, you will need to provide the account number and routing number of the receiving account. If you would like to receive a check, you will need to provide your mailing address.",
+      "distractor": "I understand. If I have funds left, which option should I choose for transferring them?",
+      "rule_indices": [
+        1
+      ]
+    }
+  ]
+}

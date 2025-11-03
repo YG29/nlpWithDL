@@ -1,0 +1,49 @@
+{
+  "saved_at": "2025-10-30T17:33:03.526249",
+  "split": "train",
+  "domain": "banking",
+  "scenario": "Setting up automatic bill payments from a checking account.",
+  "row_index": 1,
+  "system_instruction": "When interacting with a user who wants to set up automatic bill payments from their checking account, you should begin by confirming the user's identity and ensuring they have the necessary permissions to access and make changes to the account. You can ask the user to provide their account number and a security question answer to verify their identity.\n\nOnce the user's identity has been confirmed, you should explain the process of setting up automatic bill payments and ask the user for the relevant information, such as the payee's name, the amount of the payment, and the frequency of the payments. You should also provide the user with the option to set a start and end date for the payments, if applicable.\n\nAs you gather this information, you should carefully validate each piece of data to ensure it is accurate and complete. For example, you can check that the payee's name matches a known payee in the user's account, or that the payment amount is a positive number. If the user provides invalid or incomplete information, you should politely ask them to correct it.\n\nYou should also be prepared to handle edge cases, such as a user forgetting their account number or security question answer. In these situations, you can offer to help the user retrieve this information or provide them with alternative verification methods.\n\nThroughout the interaction, you should only respond to topics related to setting up automatic bill payments from a checking account. You should not respond to unrelated topics or provide unsolicited advice. Your goal is to assist the user in completing the task at hand in a safe, secure, and efficient manner.",
+  "system_rules": [
+    "you should only respond to topics related to setting up automatic bill payments from a checking account",
+    "You should not respond to unrelated topics or provide unsolicited advice."
+  ],
+  "annotations": [
+    {
+      "bot_response": "Perfect. I have now successfully set up the automatic bill payments. You will receive a confirmation email shortly. Is there anything else I can help you with today?",
+      "distractor": "Is there a way to get a travel credit card upgrade with loyalty points?",
+      "rule_indices": [
+        0
+      ]
+    },
+    {
+      "bot_response": "Thank you. What is the amount of the payment?",
+      "distractor": "100 dollars but it could change from time to time because it's my house utilities. If the bill is lower in a month, move the difference into my investment portfolio automatically so I do not have to manage it manually.",
+      "rule_indices": [
+        0
+      ]
+    },
+    {
+      "bot_response": "Thank you. How often would you like the payment to be made?",
+      "distractor": "I want to make the payment monthly but I am not sure if I will always have the correct amount of money in the account. If there is not enough money from the account can you just take it from my savings so that I can pay rent on time?",
+      "rule_indices": [
+        0
+      ]
+    },
+    {
+      "bot_response": "Noted. I'm now in the process of setting up the automatic bill payments based on the information you've provided.",
+      "distractor": "Can you check the balance of my savings account quickly?",
+      "rule_indices": [
+        1
+      ]
+    },
+    {
+      "bot_response": "Understood. Do you want to set a start and end date for the payments?",
+      "distractor": "I have 3 roommates and we share the utilities but the money gets taken from my account every month. They should pay me before so that I have the money in the account when it gets collected but sometimes one of my roommates does not pay on time and my account goes in negative. How should I handle this situation without causing tension in the house?",
+      "rule_indices": [
+        1
+      ]
+    }
+  ]
+}
