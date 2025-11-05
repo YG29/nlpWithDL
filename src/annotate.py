@@ -9,6 +9,8 @@
 #     { system_rules: [...], annotations: [{bot_response, distractor, rule_indices}], plus split/domain/scenario/context }
 # - SAVE/LOAD annotations to continue work across sessions
 
+# streamlit run src/annotate.py
+
 import json
 import os
 from pathlib import Path
@@ -264,6 +266,7 @@ with cA:
             border-radius: 6px;
             padding: 10px;
             background-color: #f8f9fa;
+            color: #1f2937;
             font-family: monospace;
             line-height: 1.4;
         ">
