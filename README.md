@@ -42,3 +42,13 @@ Overall, the human annotated data would have the following rough structure:
 5. A detailed introduction of the app can be found: [doc/introduction_of_the_annotation_app.md]
 
 
+### The Span App
+
+1. The span app can be found on the "post_annotation_process" branch.
+2. It reads the csv with group 10's 20 sample annotatation examples and you can use the app to save the span which you think breaks the system prompt in that case.
+3. 3. To run this app, first make sure to have installed the necessary packages:
+                      ```pip install streamlit datasets```
+4. A web version of the app will show up in the default browser with the following command: 
+                      ```streamlit run app_quality_control.py```
+
+
