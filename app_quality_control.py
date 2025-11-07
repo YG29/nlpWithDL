@@ -1,16 +1,15 @@
 # streamlit_app.py
 # CSV annotator that loads the CSV from your local Git repo folder (current working directory).
-# - Sidebar: pick CSV from repo (optionally search subfolders) or upload
-# - Main: Title -> Scenario -> System Prompt -> Bot turn + Distractor (read-only) -> Broken span
-# - Save: writes span into a new column next to the distractor column and exports only a JSON file for that row
-# - Optional: save full annotated CSV for download
+# Sidebar: pick CSV from repo (optionally search subfolders) or upload
+# Main: Title -> Scenario -> System Prompt -> Bot + Distractor (pretty cards) -> Broken span
+# Save: writes span into a new column next to the distractor column and exports only a JSON file for that row
+# Optional: save full annotated CSV for download
 
 import json
 import re
-import os
 from glob import glob
 from pathlib import Path
-from typing import Optional, Tuple, List
+from typing import Optional, Tuple, List, Any
 
 import pandas as pd
 import streamlit as st
@@ -97,34 +96,132 @@ def save_row_to_repo_folder(
 
     return json_path
 
-def readonly_textbox(label: str, value: str, height: int, key: str):
-    """Render a read-only textarea that looks enabled (not greyed)."""
-    st.markdown(f"**{label}**")
-    html = f"""
-    <div style="border:1px solid #e5e7eb;border-radius:6px;padding:8px;">
-      <textarea readonly
-        style="
-          width:100%;
-          height:{height}px;
-          border:none;
-          outline:none;
-          resize:vertical;
-          background-color:#ffffff;
-          color:inherit;
-          font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-          line-height:1.4;
-        ">{(value or '').replace('&','&amp;').replace('<','&lt;').replace('>','&gt;')}</textarea>
-    </div>
-    """
-    st.markdown(html, unsafe_allow_html=True)
-
 def list_repo_csvs(base_dir: Path, recursive: bool = True, limit: int = 500) -> List[Path]:
-    """List CSV files under base_dir. If recursive, search subfolders."""
     pattern = "**/*.csv" if recursive else "*.csv"
     paths = [Path(p) for p in glob(str(base_dir / pattern), recursive=recursive)]
-    # Keep it stable and not huge
     paths = sorted(paths)[:limit]
     return paths
+
+# ---------- Pretty renderer for Bot + Distractor without sideways scroll ----------
+CARD_CSS = """
+<style>
+.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  background: #ffffff;
+}
+.card h4 {
+  margin: 0 0 8px 0;
+  font-size: 0.95rem;
+  color: #111827;
+}
+.card p {
+  margin: 0;
+  white-space: pre-wrap;       /* keep newlines, wrap long lines */
+  word-wrap: break-word;
+  overflow-wrap: anywhere;     /* avoid horizontal scroll for long tokens/JSON */
+  line-height: 1.5;
+}
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media(max-width: 1000px){
+  .grid2 { grid-template-columns: 1fr; }
+}
+</style>
+"""
+
+def _html_escape(s: str) -> str:
+    return (s or "").replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+
+def _extract_pairs_from_cell(cell_text: str) -> List[Tuple[str, str]]:
+    """
+    Return list of (bot_turn, distractor) pairs.
+    Handles:
+      - JSON list of dicts with 'bot turn' and 'distractor'
+      - JSON dict with those keys
+      - Fallback: try simple heuristics, else put entire text as a single 'distractor'
+    """
+    s = (cell_text or "").strip()
+    pairs: List[Tuple[str, str]] = []
+
+    # Try JSON first
+    if s.startswith("{") or s.startswith("["):
+        try:
+            obj: Any = json.loads(s)
+            if isinstance(obj, list):
+                for item in obj:
+                    if isinstance(item, dict):
+                        bt = item.get("bot turn") or item.get("bot_turn") or item.get("bot") or ""
+                        ds = item.get("distractor") or item.get("distractors") or ""
+                        if bt or ds:
+                            pairs.append((str(bt), str(ds)))
+            elif isinstance(obj, dict):
+                bt = obj.get("bot turn") or obj.get("bot_turn") or obj.get("bot") or ""
+                ds = obj.get("distractor") or obj.get("distractors") or ""
+                if bt or ds:
+                    pairs.append((str(bt), str(ds)))
+        except Exception:
+            pass
+
+    if pairs:
+        return pairs
+
+    # Heuristic parse "bot turn: ... distractor: ..." in raw text
+    low = s.lower()
+    if "bot turn" in low and "distractor" in low:
+        try:
+            # very lightweight split
+            bot_part = re.split(r"(?i)distractor\s*:", s, maxsplit=1)[0]
+            bot_val = re.split(r"(?i)bot\s*turn\s*:", bot_part, maxsplit=1)[1]
+            dist_val = re.split(r"(?i)distractor\s*:", s, maxsplit=1)[1]
+            pairs.append((bot_val.strip(), dist_val.strip()))
+            return pairs
+        except Exception:
+            pass
+
+    # Fallback: single card with whole text as distractor
+    return [("", s)]
+
+def render_bot_and_distractor(cell_text: str, key: str) -> None:
+    st.markdown("**Bot turn + Distractor**")
+    st.markdown(CARD_CSS, unsafe_allow_html=True)
+
+    pairs = _extract_pairs_from_cell(cell_text)
+    # Show first two side by side if many, else single column
+    if len(pairs) >= 2:
+        st.markdown('<div class="grid2">', unsafe_allow_html=True)
+        for i, (bt, ds) in enumerate(pairs[:2]):
+            st.markdown(
+                f"""
+                <div class="card">
+                  <h4>Set {i+1}</h4>
+                  <p><strong>Bot turn</strong><br>{_html_escape(bt)}</p>
+                  <br/>
+                  <p><strong>Distractor</strong><br>{_html_escape(ds)}</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        st.markdown("</div>", unsafe_allow_html=True)
+    else:
+        bt, ds = pairs[0]
+        st.markdown(
+            f"""
+            <div class="card">
+              <h4>Set 1</h4>
+              <p><strong>Bot turn</strong><br>{_html_escape(bt)}</p>
+              <br/>
+              <p><strong>Distractor</strong><br>{_html_escape(ds)}</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 # ---------------- Load CSV (from repo) ----------------
 st.sidebar.header("Data source (from your repo)")
@@ -132,13 +229,8 @@ st.sidebar.header("Data source (from your repo)")
 repo_base = Path(st.sidebar.text_input("Repo folder (relative)", value=".")).resolve()
 search_subfolders = st.sidebar.checkbox("Search subfolders", value=True)
 
-# Prefer the expected filename if present, else list candidates
 default_path = repo_base / DEFAULT_FILE_NAME
-csv_candidates = []
-if default_path.exists():
-    csv_candidates = [default_path]
-else:
-    csv_candidates = list_repo_csvs(repo_base, recursive=search_subfolders)
+csv_candidates = [default_path] if default_path.exists() else list_repo_csvs(repo_base, recursive=search_subfolders)
 
 mode = st.sidebar.radio("Pick CSV", ["From repo", "Upload"], horizontal=True)
 
@@ -150,13 +242,19 @@ if mode == "From repo":
         st.sidebar.warning("No CSVs found in the selected folder. You can upload one instead.")
     else:
         show_labels = [str(p.relative_to(repo_base)) for p in csv_candidates]
-        idx = st.sidebar.selectbox("CSV file", options=list(range(len(csv_candidates))), format_func=lambda i: show_labels[i], index=0)
+        idx = st.sidebar.selectbox(
+            "CSV file",
+            options=list(range(len(csv_candidates))),
+            format_func=lambda i: show_labels[i],
+            index=0,
+            key="csv_file_select",
+        )
         csv_path = csv_candidates[idx]
         df = pd.read_csv(csv_path)
 else:
     up = st.sidebar.file_uploader("Upload a CSV", type=["csv"])
     if up is not None:
-        csv_path = repo_base / up.name  # not saved to disk; just for naming
+        csv_path = repo_base / up.name  # naming only
         df = pd.read_csv(up)
 
 if df is None:
@@ -167,27 +265,30 @@ if df is None:
 scenario_guess, system_guess, distractor_guess = discover_columns(df)
 scenario_col = st.sidebar.selectbox(
     "Scenario column", list(df.columns),
-    index=list(df.columns).index(scenario_guess) if scenario_guess in df.columns else 0
+    index=list(df.columns).index(scenario_guess) if scenario_guess in df.columns else 0,
+    key="scenario_col_select",
 )
 system_col = st.sidebar.selectbox(
     "System Prompt column", list(df.columns),
-    index=list(df.columns).index(system_guess) if system_guess in df.columns else 0
+    index=list(df.columns).index(system_guess) if system_guess in df.columns else 0,
+    key="system_col_select",
 )
 distractor_col = st.sidebar.selectbox(
     "Distractors column", list(df.columns),
-    index=list(df.columns).index(distractor_guess) if distractor_guess in df.columns else len(df.columns) - 1
+    index=list(df.columns).index(distractor_guess) if distractor_guess in df.columns else len(df.columns) - 1,
+    key="distractor_col_select",
 )
 
 # Ensure annotation column exists and sits right after the distractor column
 ensure_col_insert_after(df, ANNOT_COL_NAME, distractor_col)
 
 # Export directory inside repo
-export_dir_str = st.sidebar.text_input("Per-row export folder", value=DEFAULT_EXPORT_DIR)
+export_dir_str = st.sidebar.text_input("Per-row export folder", value=DEFAULT_EXPORT_DIR, key="export_dir_input")
 export_dir = (repo_base / export_dir_str).resolve()
 
 st.sidebar.markdown("---")
 
-# Scrollable row picker
+# ---------------- Row picker ----------------
 def scenario_label(idx: int) -> str:
     val = df.iloc[idx].get(scenario_col, f"Row {idx}")
     s = str(val)
@@ -198,6 +299,7 @@ row_index = st.sidebar.selectbox(
     options=list(range(len(df))),
     format_func=scenario_label,
     index=0,
+    key="row_picker",
 )
 
 # ---------------- Main layout ----------------
@@ -212,16 +314,11 @@ st.text_area(
     label="",
     value=str(row.get(system_col, "") or ""),
     height=180,
-    key=f"sys_show_{row_index}",
+    key=f"sys_show_{row_index}",  # key depends on row_index so it refreshes on change
 )
 
-# Read-only combined cell (normal appearance)
-readonly_textbox(
-    label="Bot turn + Distractor (raw cell from CSV)",
-    value=str(row.get(distractor_col, "") or ""),
-    height=200,
-    key=f"combo_{row_index}",
-)
+# Pretty, non-scroll, auto-wrapping cards for Bot + Distractor
+render_bot_and_distractor(str(row.get(distractor_col, "") or ""), key=f"combo_{row_index}")
 
 st.markdown("**Broken span (what part of the system prompt is violated?)**")
 current_span_val = "" if pd.isna(row.get(ANNOT_COL_NAME, "")) else str(row.get(ANNOT_COL_NAME, ""))
@@ -235,24 +332,31 @@ span_text = st.text_area(
 
 colA, colB = st.columns([1, 1])
 with colA:
-    if st.button("💾 Save to this row and export JSON", type="primary"):
+    if st.button("💾 Save to this row and export JSON", type="primary", key=f"save_btn_{row_index}"):
         df.at[df.index[row_index], ANNOT_COL_NAME] = span_text
         json_path = save_row_to_repo_folder(
             df, row_index, export_dir, scenario_col, system_col, distractor_col, ANNOT_COL_NAME
         )
-        rel_json = json_path.relative_to(repo_base) if json_path.is_relative_to(repo_base) else json_path
+        try:
+            rel_json = json_path.relative_to(repo_base)
+        except ValueError:
+            rel_json = json_path
         st.success(f"Saved JSON for row {row_index}: {rel_json}")
 
 with colB:
-    if csv_path is not None and st.button("⬇️ Save full annotated CSV"):
+    if csv_path is not None and st.button("⬇️ Save full annotated CSV", key=f"save_csv_{row_index}"):
         out_path = save_whole_csv(Path(csv_path), df)
-        rel_csv = out_path.relative_to(repo_base) if out_path.is_relative_to(repo_base) else out_path
+        try:
+            rel_csv = out_path.relative_to(repo_base)
+        except ValueError:
+            rel_csv = out_path
         st.success(f"Saved full CSV: {rel_csv}")
         st.download_button(
             "Download annotated CSV",
             data=df.to_csv(index=False).encode("utf-8"),
             file_name=Path(out_path).name,
             mime="text/csv",
+            key=f"download_csv_{row_index}",
         )
 
 st.markdown("---")
