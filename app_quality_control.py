@@ -120,9 +120,9 @@ CARD_CSS = """
 }
 .card p {
   margin: 0;
-  white-space: pre-wrap;       /* keep newlines, wrap long lines */
+  white-space: pre-wrap;
   word-wrap: break-word;
-  overflow-wrap: anywhere;     /* avoid horizontal scroll for long tokens/JSON */
+  overflow-wrap: anywhere;
   line-height: 1.5;
 }
 .grid2 {
@@ -172,11 +172,10 @@ def _extract_pairs_from_cell(cell_text: str) -> List[Tuple[str, str]]:
     if pairs:
         return pairs
 
-    # Heuristic parse "bot turn: ... distractor: ..." in raw text
+    # Heuristic parse "bot turn: ... distractor: ..."
     low = s.lower()
     if "bot turn" in low and "distractor" in low:
         try:
-            # very lightweight split
             bot_part = re.split(r"(?i)distractor\s*:", s, maxsplit=1)[0]
             bot_val = re.split(r"(?i)bot\s*turn\s*:", bot_part, maxsplit=1)[1]
             dist_val = re.split(r"(?i)distractor\s*:", s, maxsplit=1)[1]
@@ -185,7 +184,7 @@ def _extract_pairs_from_cell(cell_text: str) -> List[Tuple[str, str]]:
         except Exception:
             pass
 
-    # Fallback: single card with whole text as distractor
+    # Fallback
     return [("", s)]
 
 def render_bot_and_distractor(cell_text: str, key: str) -> None:
@@ -193,7 +192,6 @@ def render_bot_and_distractor(cell_text: str, key: str) -> None:
     st.markdown(CARD_CSS, unsafe_allow_html=True)
 
     pairs = _extract_pairs_from_cell(cell_text)
-    # Show first two side by side if many, else single column
     if len(pairs) >= 2:
         st.markdown('<div class="grid2">', unsafe_allow_html=True)
         for i, (bt, ds) in enumerate(pairs[:2]):
@@ -250,12 +248,20 @@ if mode == "From repo":
             key="csv_file_select",
         )
         csv_path = csv_candidates[idx]
-        df = pd.read_csv(csv_path)
+        # Robust CSV read
+        try:
+            df = pd.read_csv(csv_path)
+        except UnicodeDecodeError:
+            df = pd.read_csv(csv_path, encoding="latin-1")
 else:
     up = st.sidebar.file_uploader("Upload a CSV", type=["csv"])
     if up is not None:
         csv_path = repo_base / up.name  # naming only
-        df = pd.read_csv(up)
+        try:
+            df = pd.read_csv(up)
+        except UnicodeDecodeError:
+            up.seek(0)
+            df = pd.read_csv(up, encoding="latin-1")
 
 if df is None:
     st.info("Pick or upload a CSV in the sidebar to begin.")
@@ -289,15 +295,18 @@ export_dir = (repo_base / export_dir_str).resolve()
 st.sidebar.markdown("---")
 
 # ---------------- Row picker ----------------
-def scenario_label(idx: int) -> str:
+def unique_scenario_label(idx: int) -> str:
+    """Make labels unique so the selectbox never collapses different rows into the same visible name."""
     val = df.iloc[idx].get(scenario_col, f"Row {idx}")
-    s = str(val)
-    return (s[:80] + "…") if len(s) > 80 else s
+    s = str(val).replace("\n", " ")
+    trunc = (s[:80] + "…") if len(s) > 80 else s
+    # Prefix with a zero-padded index to guarantee uniqueness
+    return f"#{idx:04d} | {trunc}"
 
 row_index = st.sidebar.selectbox(
     "Pick a row / scenario",
     options=list(range(len(df))),
-    format_func=scenario_label,
+    format_func=unique_scenario_label,  # ensures no duplicate visible labels
     index=0,
     key="row_picker",
 )
