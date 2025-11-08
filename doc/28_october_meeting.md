@@ -1,4 +1,4 @@
-# 28th of Octorber meeting
+# 28th of Octorber meeting
 We decided to meet again after a few days of serious annotatons to see how its going and clear up any questions. 
 
 - Every team member started their annotations and process is going well
