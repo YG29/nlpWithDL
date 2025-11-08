@@ -8,6 +8,8 @@ We found the annotaion process interesting beacuse it was a new experience for a
 
 The health domain felt the most intuitive, as it required less background knowledge. The banking and especially the legal domains were more challenging due to the system prompts using terminology we were not familiar with. These domains took longer to annotate but as we carried on, we became more efficient even in the difficult scenarios. The annotation app we creted helped speed up the annotation process and allowed us to keep a consistent annotation strategy. 
 
+While the health domain was the most intuitive to work with, we noticed that its system prompts often had less clearly defined boundaries compared to the other domains. In some cases, the system instructions could have set clearer limits on what the LLM was allowed to discuss so that there are no misunderstandings when creating the distractors.
+
 ## Quality control
 The quality control phase with the other groups was a valuable step to check whether our distractor made sense to others. However, we did think it may have been too simplistic because most system prompts only had one sentence saying what to avoid or not do, which made it easy to select the right span. With more time, it would have been interesting to analyse the distractors by difficulty level and to test them directly on an LLM to see how well they worked. A deeper analysis of the distractor quality should be done for sure in future work of this project. 
 
