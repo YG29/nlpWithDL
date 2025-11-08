@@ -1,0 +1,6 @@
+# 8 November meeting notes
+- Yesterday all group members completed the quality control task and review the distractors of Group 10.
+- We thought most distractors were of good quality but some of them were clearly off-topic so it would probably be easier for LLM to catch them.
+- All group members thought it was quite easy to locate the span of the system instructions which was being broken. It is important to note that in most cases the system prompt only had one sentence saying what should be avoided by the LLM and therefore it made it quite easy to locate the span.
+- TO DO: clean up the github and make sure everything is in place for the final deadline. We also used our own app during the annotations so we have to make sure with the other groups our final csv file is in the same format so that it can be all be put together for the final dataset. 
+- We contacted the other groups to see whether they could send their quality task back to us so that we can check if they understood which span our sampled distractors broke. 
