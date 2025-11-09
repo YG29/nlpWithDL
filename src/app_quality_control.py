@@ -4,6 +4,7 @@
 # Main: Title -> Scenario -> System Prompt -> Bot + Distractor (pretty cards) -> Broken span
 # Save: writes span into a new column next to the distractor column and exports only a JSON file for that row
 # Optional: save full annotated CSV for download
+# usage: streamlit run src/app_quality_control.py
 
 import json
 import re
