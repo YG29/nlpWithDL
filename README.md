@@ -5,11 +5,21 @@ project/
 |
 |----annotation_saves/ # -b annotate: saved annotation entries
 |
+|----csv_exports/ # -b post_annotate_process: process json annotations to csv entries
+|
+|----distractor_span/ # quality check for group 10
+|
 |----doc/
 | └----additional_requirements_20oct.md # meeting notes form 20 Oct
 | └----initial_annotation_strategy.md 
 | └----initial_requirements_breakdown.md
 | └----introduction_of_the_annotation_app.md # introduction to the app in -b annotate 
+|
+|----final_annotations/ # csv files for final annotations
+| └----combined_annotations.csv # all of group 6 annotations
+| └----combined_annotations_guidelines.csv # mergeable formats with the other groups
+|
+|----Group10_sample/ # distractors received from group 10 for quality check
 |
 |----notebooks/
 |
